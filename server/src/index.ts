@@ -1,23 +1,19 @@
-import { Hono } from 'hono'
-import { cors } from 'hono/cors'
-import type { ApiResponse } from 'shared/dist'
+import { trpcServer } from "@hono/trpc-server";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { appRouter } from "./api/trpc";
 
-const app = new Hono()
+const app = new Hono();
 
-app.use(cors())
+app.use(cors());
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.get("/", (c) => {
+  return c.text("Hello Hono!");
+});
 
-app.get('/hello', async (c) => {
+// TODO: move to "/api/trpc/*"
+app.use("/trpc/*", trpcServer({ router: appRouter }));
 
-  const data: ApiResponse = {
-    message: "Hello BHVR!",
-    success: true
-  }
+export default app;
 
-  return c.json(data, { status: 200 })
-})
-
-export default app
+export type AppRouter = typeof appRouter;

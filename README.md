@@ -26,8 +26,6 @@ While there are plenty of existing app building stacks out there, many of them a
 .
 ├── client/               # React frontend
 ├── server/               # Hono backend
-├── shared/               # Shared TypeScript definitions
-│   └── src/types/        # Type definitions used by both client and server
 ├── package.json          # Root package.json with workspaces
 └── turbo.json            # Turbo configuration for build orchestration
 ```
