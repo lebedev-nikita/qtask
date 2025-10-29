@@ -3,12 +3,12 @@ import { sql } from "bun";
 import z from "zod";
 
 class Store {
-  async create(props: { queueId: string; title: string }) {
+  async create(props: { queueId: string; title: string; priority: number }) {
     await sql`
       INSERT INTO task
-        (queue_id,          title        )
+        (queue_id,          title,         priority         )
       VALUES
-        (${props.queueId}, ${props.title})
+        (${props.queueId}, ${props.title}, ${props.priority})
     `;
   }
 
@@ -17,6 +17,7 @@ class Store {
       SELECT *
       FROM task
       WHERE queue_id = ${props.queueId}
+      ORDER BY priority DESC
     `;
 
     const schema = CamelizedSchema.pipe(
@@ -24,6 +25,7 @@ class Store {
         taskId: z.string(),
         queueId: z.string(),
         title: z.string(),
+        priority: z.number(),
         createdAt: z.date(),
       }),
     );
@@ -36,6 +38,16 @@ class Store {
       DELETE FROM task
       WHERE task_id = ${props.taskId}
         AND queue_id = ${props.queueId}
+    `;
+  }
+
+  async move(props: { taskId: string; fromQueueId: string; toQueueId: string; priority: number }) {
+    await sql`
+      UPDATE task SET 
+        queue_id = ${props.toQueueId},
+        priority = ${props.priority}
+      WHERE task_id = ${props.taskId}
+        AND queue_id = ${props.fromQueueId}
     `;
   }
 }

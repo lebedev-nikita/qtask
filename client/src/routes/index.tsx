@@ -1,9 +1,11 @@
+import { DndContext } from "@dnd-kit/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import QueuePanel from "@/components/QueuePanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCreateQueueMutation, useQueues } from "@/hooks/api";
+import { useCreateQueueMutation, useMoveTaskMutation, useQueues } from "@/hooks/api";
+import QueuePanel from "@/routes/-components/QueuePanel";
+import type { DraggablePayload, DropzonePayload } from "@/types";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -14,6 +16,8 @@ function Index() {
 
   const queues = useQueues();
   const createQueueM = useCreateQueueMutation();
+
+  const moveTaskM = useMoveTaskMutation();
 
   return (
     <div className="mx-auto flex min-h-screen max-w-xl items-center justify-center gap-6">
@@ -38,11 +42,27 @@ function Index() {
         <form onSubmit={(e) => e.preventDefault()}></form>
       </div>
 
-      <div className="flex border border-black">
-        {queues.data?.map((queue) => (
-          <QueuePanel key={queue.queueId} queue={queue} />
-        ))}
-      </div>
+      <DndContext
+        onDragEnd={(event) => {
+          if (!event.over) return;
+
+          const active = event.active.data.current as DraggablePayload;
+          const over = event.over.data.current as DropzonePayload;
+
+          moveTaskM.mutate({
+            taskId: active.taskId,
+            toQueueId: over.queueId,
+            fromQueueId: active.queueId,
+            priority: over.priority,
+          });
+        }}
+      >
+        <div className="flex rounded border border-black">
+          {queues.data?.map((queue) => (
+            <QueuePanel key={queue.queueId} queue={queue} />
+          ))}
+        </div>
+      </DndContext>
     </div>
   );
 }

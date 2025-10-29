@@ -16,6 +16,7 @@ export const taskRouter = router({
           queueId: z.string(),
           title: z.string(),
           createdAt: z.date(),
+          priority: z.number(),
         }),
       ),
     )
@@ -28,10 +29,12 @@ export const taskRouter = router({
       z.object({
         queueId: z.string(),
         title: z.string().min(1),
+        priority: z.number(),
       }),
     )
-    .mutation(async ({ input: { queueId, title } }) => {
-      await pg.task.create({ queueId, title });
+    .mutation(async ({ input }) => {
+      console.log(input);
+      await pg.task.create(input);
     }),
 
   delete: publicProcedure
@@ -43,5 +46,18 @@ export const taskRouter = router({
     )
     .mutation(async ({ input }) => {
       await pg.task.delete(input);
+    }),
+
+  move: publicProcedure
+    .input(
+      z.object({
+        taskId: z.string(),
+        fromQueueId: z.string(),
+        toQueueId: z.string(),
+        priority: z.number(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await pg.task.move(input);
     }),
 });

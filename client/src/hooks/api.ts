@@ -57,3 +57,20 @@ export function useQueues() {
 export function useTasks(input: inferInput<typeof trpc.task.list>) {
   return useQuery(trpc.task.list.queryOptions(input));
 }
+
+export function useMoveTaskMutation() {
+  const client = useQueryClient();
+
+  return useMutation(
+    trpc.task.move.mutationOptions({
+      onSuccess(_, { fromQueueId, toQueueId }) {
+        client.invalidateQueries({
+          queryKey: trpc.task.list.queryKey({ queueId: fromQueueId }),
+        });
+        client.invalidateQueries({
+          queryKey: trpc.task.list.queryKey({ queueId: toQueueId }),
+        });
+      },
+    }),
+  );
+}
