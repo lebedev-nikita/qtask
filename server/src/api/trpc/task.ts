@@ -24,7 +24,6 @@ export const taskRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      console.log(input);
       await pg.task.create(input);
     }),
 

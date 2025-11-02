@@ -21,3 +21,22 @@ export const QueueSchema = z.object({
   name: z.string(),
   createdAt: z.date(),
 });
+
+export const UserSchema = z.object({
+  userId: z.uuid(),
+  email: z.email(),
+  name: z.string(),
+  picture: z.url().nullable(),
+  createdAt: z.date(),
+});
+
+export const GooglePayloadSchema = z.object({
+  sub: z.string(),
+  email: z.email(),
+  name: z.string().optional(),
+  picture: z.url().optional(),
+});
+
+export const JwtPayloadSchema = z.object({
+  userId: z.string(),
+});

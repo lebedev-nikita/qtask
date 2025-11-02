@@ -20,7 +20,7 @@ function Index() {
   const moveTaskM = useMoveTaskMutation();
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-xl items-center justify-center gap-6">
+    <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-6">
       <div className="flex flex-col gap-2">
         <form
           className="flex gap-2"

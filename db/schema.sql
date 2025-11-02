@@ -4,7 +4,6 @@ CREATE TABLE queue (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-
 CREATE TYPE task_status AS ENUM ('active', 'finished');
 
 CREATE TABLE task (
@@ -15,4 +14,12 @@ CREATE TABLE task (
   priority    DOUBLE PRECISION  NOT NULL,
   status      task_status       NOT NULL DEFAULT 'active',
   UNIQUE (queue_id, priority)
-)
+);
+
+CREATE TABLE "user" (
+  user_id     UUID        PRIMARY KEY,
+  email       TEXT        NOT NULL UNIQUE,
+  name        TEXT        NOT NULL,
+  picture     TEXT            NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);

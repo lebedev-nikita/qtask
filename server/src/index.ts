@@ -2,6 +2,7 @@ import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { appRouter } from "./api/trpc";
+import { createContext } from "./api/trpc/_config";
 
 const app = new Hono();
 
@@ -12,8 +13,6 @@ app.get("/", (c) => {
 });
 
 // TODO: move to "/api/trpc/*"
-app.use("/trpc/*", trpcServer({ router: appRouter }));
+app.use("/trpc/*", trpcServer({ router: appRouter, createContext }));
 
 export default app;
-
-export type AppRouter = typeof appRouter;

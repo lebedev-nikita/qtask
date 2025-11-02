@@ -98,3 +98,31 @@ export function useSetTaskStatusMutation() {
     }),
   );
 }
+
+export function useIsLoggedIn() {
+  return useQuery(trpc.auth.isLoggedIn.queryOptions());
+}
+
+export function useLogOutMutation() {
+  const client = useQueryClient();
+
+  return useMutation(
+    trpc.auth.logOut.mutationOptions({
+      onSuccess() {
+        client.invalidateQueries({ queryKey: trpc.auth.isLoggedIn.queryKey() });
+      },
+    }),
+  );
+}
+
+export function useLogInMutation() {
+  const client = useQueryClient();
+
+  return useMutation(
+    trpc.auth.logIn.mutationOptions({
+      onSuccess() {
+        client.invalidateQueries({ queryKey: trpc.auth.isLoggedIn.queryKey() });
+      },
+    }),
+  );
+}

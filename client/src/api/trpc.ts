@@ -1,33 +1,19 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
-import { createTRPCProxyClient, httpBatchLink, TRPCClientError } from "@trpc/client";
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import type { AppRouter } from "server";
-import { toast } from "sonner";
 import SuperJSON from "superjson";
-
-function onError(error: unknown) {
-  if (error instanceof TRPCClientError) {
-    const message = error.message;
-    const { httpStatus, path } = error.data;
-    return toast.error(`${path}: ${message}: ${httpStatus}`);
-  }
-  if (error instanceof Error) {
-    return toast.error(error.message);
-  }
-  if (typeof error === "string") {
-    return toast.error(error);
-  }
-}
+import { showError } from "@/lib/error";
+import type { AppRouter } from "@/types";
 
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({ onError }),
-  defaultOptions: { mutations: { onError } },
+  queryCache: new QueryCache({ onError: showError }),
+  defaultOptions: { mutations: { onError: showError } },
 });
 
 export const client = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: `http://localhost:3000/trpc/`,
+      url: `/trpc/`,
       transformer: SuperJSON,
     }),
   ],

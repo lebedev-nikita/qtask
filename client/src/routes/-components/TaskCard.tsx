@@ -35,14 +35,17 @@ export default function TaskCard(props: Props) {
           : undefined,
       }}
     >
-      <div className={"flex grow items-center rounded align-middle"}>
+      <div className={"flex grow items-center gap-1 rounded align-middle"}>
         <span
-          className={draggable.isDragging ? "cursor-grabbing" : "cursor-grab"}
+          className={clsx(
+            "rounded-xs hover:bg-slate-200",
+            draggable.isDragging ? "cursor-grabbing" : "cursor-grab",
+          )}
           ref={draggable.setNodeRef}
           {...draggable.listeners}
           {...draggable.attributes}
         >
-          <GripVerticalIcon className="h-5 text-slate-500" />
+          <GripVerticalIcon className="-mx-0.5 h-5 text-slate-500" />
         </span>
 
         <div className="flex items-center gap-2">
