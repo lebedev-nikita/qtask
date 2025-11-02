@@ -21,12 +21,10 @@ export default function Dropzone(props: Props) {
     <div
       ref={droppable.setNodeRef}
       className={clsx(
-        "rounded-sm p-1 text-center text-red-600 text-xs",
-        droppable.isOver ? "border-red-600 bg-red-200" : "border-red-400 bg-red-100",
+        "rounded-sm bg-orange-200 p-0.5",
+        droppable.isOver ? "opacity-100" : "opacity-0",
         props.className,
       )}
-    >
-      {props.priority}
-    </div>
+    ></div>
   );
 }

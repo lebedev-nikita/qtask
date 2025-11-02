@@ -1,12 +1,10 @@
 import clsx from "clsx";
-import dayjs from "dayjs";
-import { TrashIcon } from "lucide-react";
 import { Fragment } from "react/jsx-runtime";
-import { Button } from "@/components/ui/button";
-import { useDeleteQueueMutation, useTasks } from "@/hooks/api";
+import { useTasks } from "@/hooks/api";
 import type { Queue } from "@/types";
 import CreateTaskForm from "./CreateTaskForm";
 import Dropzone from "./Dropzone";
+import QueuePanelHeader from "./QueuePanelHeader";
 import TaskCard from "./TaskCard";
 
 type Props = {
@@ -17,23 +15,12 @@ type Props = {
 export default function QueuePanel(props: Props) {
   const tasks = useTasks({ queueId: props.queue.queueId });
 
-  const deleteQueueM = useDeleteQueueMutation();
-
   return (
-    <div className={clsx("flex flex-col gap-2 border p-2", props.className)}>
-      <div className="flex items-center justify-between">
-        <b>{props.queue.name}</b>
-        <Button onClick={() => deleteQueueM.mutate({ queueId: props.queue.queueId })}>
-          <TrashIcon />
-        </Button>
-      </div>
-      <p className="whitespace-nowrap">
-        created at: {dayjs(props.queue.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-      </p>
-
+    <div className={clsx("flex min-w-[350px] flex-col gap-2 border p-2", props.className)}>
+      <QueuePanelHeader queue={props.queue} />
       {tasks.data && (
         <>
-          <div className="flex grow flex-col gap-1">
+          <div className="flex grow flex-col gap-[1px]">
             <Dropzone
               priority={tasks.data[0] ? tasks.data[0].priority + 1 : 0}
               queueId={props.queue.queueId}

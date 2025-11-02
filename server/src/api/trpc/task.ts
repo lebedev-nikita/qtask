@@ -1,3 +1,4 @@
+import { TaskSchema, TaskStatusSchema } from "@server/schemas";
 import { pg } from "@server/sensors/pg";
 import z from "zod";
 import { publicProcedure, router } from "./_config";
@@ -9,17 +10,7 @@ export const taskRouter = router({
         queueId: z.string(),
       }),
     )
-    .output(
-      z.array(
-        z.object({
-          taskId: z.string(),
-          queueId: z.string(),
-          title: z.string(),
-          createdAt: z.date(),
-          priority: z.number(),
-        }),
-      ),
-    )
+    .output(z.array(TaskSchema))
     .query(async ({ input }) => {
       return await pg.task.list(input);
     }),
@@ -59,5 +50,17 @@ export const taskRouter = router({
     )
     .mutation(async ({ input }) => {
       await pg.task.move(input);
+    }),
+
+  setStatus: publicProcedure
+    .input(
+      z.object({
+        taskId: z.string(),
+        queueId: z.string(),
+        status: TaskStatusSchema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await pg.task.setStatus(input);
     }),
 });

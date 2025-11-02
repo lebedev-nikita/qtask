@@ -36,4 +36,15 @@ export const queueRouter = router({
     .mutation(async ({ input: { queueId } }) => {
       await pg.queue.delete({ queueId });
     }),
+
+  setName: publicProcedure
+    .input(
+      z.object({
+        queueId: z.string(),
+        name: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await pg.queue.setName(input);
+    }),
 });

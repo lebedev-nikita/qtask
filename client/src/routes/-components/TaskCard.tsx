@@ -1,8 +1,9 @@
 import { useDraggable } from "@dnd-kit/core";
 import clsx from "clsx";
-import { TrashIcon } from "lucide-react";
+import { GripVerticalIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useDeleteTaskMutation } from "@/hooks/api";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useDeleteTaskMutation, useSetTaskStatusMutation } from "@/hooks/api";
 import type { DraggablePayload, Task } from "@/types";
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
 
 export default function TaskCard(props: Props) {
   const deleteTaskM = useDeleteTaskMutation();
+  const setStatusM = useSetTaskStatusMutation();
 
   const draggable = useDraggable({
     id: props.task.taskId,
@@ -33,16 +35,32 @@ export default function TaskCard(props: Props) {
           : undefined,
       }}
     >
-      <div
-        className={clsx(
-          "flex grow items-center rounded bg-slate-100 px-2 align-middle",
-          draggable.isDragging ? "cursor-grabbing" : "cursor-grab",
-        )}
-        ref={draggable.setNodeRef}
-        {...draggable.listeners}
-        {...draggable.attributes}
-      >
-        {props.task.title} ({props.task.priority})
+      <div className={"flex grow items-center rounded align-middle"}>
+        <span
+          className={draggable.isDragging ? "cursor-grabbing" : "cursor-grab"}
+          ref={draggable.setNodeRef}
+          {...draggable.listeners}
+          {...draggable.attributes}
+        >
+          <GripVerticalIcon className="h-5 text-slate-500" />
+        </span>
+
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={props.task.status === "finished"}
+            onCheckedChange={(e) => {
+              setStatusM.mutate({
+                taskId: props.task.taskId,
+                queueId: props.task.queueId,
+                status: e ? "finished" : "active",
+              });
+            }}
+          />
+
+          <span className={clsx(props.task.status === "finished" && "line-through")}>
+            {props.task.title} ({props.task.priority})
+          </span>
+        </div>
       </div>
       <Button
         onClick={() => {

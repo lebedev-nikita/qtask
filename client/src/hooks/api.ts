@@ -74,3 +74,27 @@ export function useMoveTaskMutation() {
     }),
   );
 }
+
+export function useSetQueueNameMutation() {
+  const client = useQueryClient();
+
+  return useMutation(
+    trpc.queue.setName.mutationOptions({
+      onSuccess() {
+        client.invalidateQueries({ queryKey: trpc.queue.list.queryKey() });
+      },
+    }),
+  );
+}
+
+export function useSetTaskStatusMutation() {
+  const client = useQueryClient();
+
+  return useMutation(
+    trpc.task.setStatus.mutationOptions({
+      onSuccess(_, { queueId }) {
+        client.invalidateQueries({ queryKey: trpc.task.list.queryKey({ queueId }) });
+      },
+    }),
+  );
+}
