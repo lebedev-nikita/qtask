@@ -71,7 +71,13 @@ export default function QtaskCard(props: Props) {
           {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
         </Button>
 
-        <QtaskCardHeader newChildPriority={newChildPriority} className="grow" qtask={props.qtask} />
+        <QtaskCardHeader
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
+          newChildPriority={newChildPriority}
+          className="grow"
+          qtask={props.qtask}
+        />
       </div>
 
       {open && tasks.data && newChildPriority !== undefined && (

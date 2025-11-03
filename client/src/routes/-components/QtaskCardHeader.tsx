@@ -1,20 +1,37 @@
 import type { Qtask } from "@server/types";
 import clsx from "clsx";
-import { CheckIcon, EditIcon, TrashIcon, XIcon } from "lucide-react";
+import {
+  CheckIcon,
+  EditIcon,
+  EllipsisVerticalIcon,
+  PlusIcon,
+  TrashIcon,
+  XIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { setQtaskTitle, useDeleteQtaskMutation } from "@/hooks/api";
-import AddQtaskButton from "./AddQtaskButton";
+import AddQtaskDialog from "./AddQtaskDialog";
 
 type Props = {
   className?: string;
   qtask: Qtask;
   newChildPriority: number | undefined;
+  onOpen(): void;
+  onClose(): void;
 };
 
 export default function QtaskCardHeader(props: Props) {
   const [draft, setDraft] = useState<null | string>(null);
+
+  const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const deleteQueueM = useDeleteQtaskMutation();
   const setQueueNameM = setQtaskTitle();
@@ -49,8 +66,6 @@ export default function QtaskCardHeader(props: Props) {
       )}
 
       <div className="flex gap-1">
-        <AddQtaskButton short parentId={props.qtask.qtaskId} priority={props.newChildPriority} />
-
         {!editName ? (
           <Button onClick={() => setDraft(props.qtask.title)}>
             <EditIcon />
@@ -61,16 +76,46 @@ export default function QtaskCardHeader(props: Props) {
           </Button>
         )}
 
-        <Button
-          onClick={() => {
-            deleteQueueM.mutate({
-              qtaskId: props.qtask.qtaskId,
-              parentId: props.qtask.parentId,
-            });
-          }}
-        >
-          <TrashIcon />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>
+              <EllipsisVerticalIcon />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className="">
+            <DropdownMenuItem
+              onClick={() => {
+                setOpenAddDialog(true);
+                props.onOpen();
+              }}
+            >
+              <span className="grow">Add Qtask</span>
+              <PlusIcon />
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => {
+                deleteQueueM.mutate({
+                  qtaskId: props.qtask.qtaskId,
+                  parentId: props.qtask.parentId,
+                });
+              }}
+            >
+              <span className="grow">Delete</span>
+              <TrashIcon />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {props.newChildPriority !== undefined && (
+          <AddQtaskDialog
+            open={openAddDialog}
+            onOpenChange={setOpenAddDialog}
+            parentId={props.qtask.qtaskId}
+            priority={props.newChildPriority}
+          />
+        )}
       </div>
     </div>
   );
