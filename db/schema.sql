@@ -1,20 +1,4 @@
-CREATE TABLE queue (
-  queue_id    BIGSERIAL PRIMARY KEY,
-  name        TEXT        NOT NULL,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TYPE task_status AS ENUM ('active', 'finished');
-
-CREATE TABLE task (
-  task_id     BIGSERIAL PRIMARY KEY ,
-  queue_id    BIGINT            NOT NULL REFERENCES queue (queue_id) ON DELETE CASCADE,
-  title       TEXT              NOT NULL,
-  created_at  TIMESTAMPTZ       NOT NULL DEFAULT now(),
-  priority    DOUBLE PRECISION  NOT NULL,
-  status      task_status       NOT NULL DEFAULT 'active',
-  UNIQUE (queue_id, priority)
-);
+CREATE TYPE qtask_status AS ENUM ('active', 'finished');
 
 CREATE TABLE "user" (
   user_id     UUID        PRIMARY KEY,
@@ -22,4 +6,15 @@ CREATE TABLE "user" (
   name        TEXT        NOT NULL,
   picture     TEXT            NULL,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE qtask (
+  qtask_id      BIGSERIAL PRIMARY KEY,
+  title         TEXT              NOT NULL,
+  description   TEXT                  NULL,
+  created_at    TIMESTAMPTZ       NOT NULL DEFAULT now(),
+  status        qtask_status      NOT NULL DEFAULT 'active',
+  priority      DOUBLE PRECISION  NOT NULL,
+  parent_id     BIGINT                NULL REFERENCES qtask(qtask_id),
+  UNIQUE NULLS DISTINCT (parent_id, priority)
 );

@@ -44,4 +44,4 @@ class Store {
   }
 }
 
-export const user = new Store();
+export const userStore = new Store();

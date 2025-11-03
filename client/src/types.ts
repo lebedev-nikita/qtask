@@ -1,11 +1,11 @@
 export type * from "@server/types";
 
 export type DraggablePayload = {
-  queueId: string;
-  taskId: string;
+  parentId: string | null;
+  qtaskId: string;
 };
 
 export type DropzonePayload = {
-  queueId: string;
+  parentId: string;
   priority: number;
 };

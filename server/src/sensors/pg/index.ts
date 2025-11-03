@@ -1,9 +1,7 @@
-import { queue } from "./queues";
-import { task } from "./task";
-import { user } from "./user";
+import { qtaskStore } from "./qtask";
+import { userStore } from "./user";
 
 export const pg = {
-  queue,
-  task,
-  user,
+  qtask: qtaskStore,
+  user: userStore,
 };

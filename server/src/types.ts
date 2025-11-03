@@ -1,10 +1,10 @@
 import type z from "zod";
 import type { appRouter } from "./api/trpc";
-import type { JwtPayloadSchema, QueueSchema, TaskSchema, TaskStatusSchema } from "./schemas";
+import type { JwtPayloadSchema, QtaskSchema, QtaskStatusSchema } from "./schemas";
 
 export type AppRouter = typeof appRouter;
 
-export type Task = z.infer<typeof TaskSchema>;
-export type Queue = z.infer<typeof QueueSchema>;
-export type TaskStatus = z.infer<typeof TaskStatusSchema>;
+export type Qtask = z.infer<typeof QtaskSchema>;
+export type QtaskStatus = z.infer<typeof QtaskStatusSchema>;
+
 export type JwtPayload = z.infer<typeof JwtPayloadSchema>;

@@ -4,15 +4,15 @@ import type { DropzonePayload } from "@/types";
 
 type Props = {
   className?: string;
-  queueId: string;
+  parentId: string;
   priority: number;
 };
 
 export default function Dropzone(props: Props) {
   const droppable = useDroppable({
-    id: `${props.queueId}:${props.priority}`,
+    id: `${props.parentId}:${props.priority}`,
     data: {
-      queueId: props.queueId,
+      parentId: props.parentId,
       priority: props.priority,
     } satisfies DropzonePayload,
   });

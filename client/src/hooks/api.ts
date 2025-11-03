@@ -2,98 +2,70 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { inferInput } from "@trpc/tanstack-react-query";
 import { trpc } from "@/api/trpc";
 
-export function useCreateQueueMutation() {
+export function useCreateQtaskMutation() {
   const client = useQueryClient();
 
   return useMutation(
-    trpc.queue.create.mutationOptions({
-      onSuccess() {
-        client.invalidateQueries({ queryKey: trpc.queue.list.queryKey() });
+    trpc.qtask.create.mutationOptions({
+      onSuccess(_, { parentId }) {
+        client.invalidateQueries({ queryKey: trpc.qtask.list.queryKey({ parentId }) });
       },
     }),
   );
 }
 
-export function useDeleteQueueMutation() {
+export function useDeleteQtaskMutation() {
   const client = useQueryClient();
 
   return useMutation(
-    trpc.queue.delete.mutationOptions({
-      onSuccess() {
-        client.invalidateQueries({ queryKey: trpc.queue.list.queryKey() });
+    trpc.qtask.delete.mutationOptions({
+      onSuccess(_, { parentId }) {
+        client.invalidateQueries({ queryKey: trpc.qtask.list.queryKey({ parentId }) });
       },
     }),
   );
 }
 
-export function useCreateTaskMutation() {
+export function useQtasks(input: inferInput<typeof trpc.qtask.list>) {
+  return useQuery(trpc.qtask.list.queryOptions(input));
+}
+
+export function useSetParentMutation() {
   const client = useQueryClient();
 
   return useMutation(
-    trpc.task.create.mutationOptions({
-      onSuccess(_, { queueId }) {
-        client.invalidateQueries({ queryKey: trpc.task.list.queryKey({ queueId }) });
-      },
-    }),
-  );
-}
-
-export function useDeleteTaskMutation() {
-  const client = useQueryClient();
-
-  return useMutation(
-    trpc.task.delete.mutationOptions({
-      onSuccess(_, { queueId }) {
-        client.invalidateQueries({ queryKey: trpc.task.list.queryKey({ queueId }) });
-      },
-    }),
-  );
-}
-
-export function useQueues() {
-  return useQuery(trpc.queue.list.queryOptions());
-}
-
-export function useTasks(input: inferInput<typeof trpc.task.list>) {
-  return useQuery(trpc.task.list.queryOptions(input));
-}
-
-export function useMoveTaskMutation() {
-  const client = useQueryClient();
-
-  return useMutation(
-    trpc.task.move.mutationOptions({
-      onSuccess(_, { fromQueueId, toQueueId }) {
+    trpc.qtask.setParent.mutationOptions({
+      onSuccess(_, { newParentId, oldParentId }) {
         client.invalidateQueries({
-          queryKey: trpc.task.list.queryKey({ queueId: fromQueueId }),
+          queryKey: trpc.qtask.list.queryKey({ parentId: newParentId }),
         });
         client.invalidateQueries({
-          queryKey: trpc.task.list.queryKey({ queueId: toQueueId }),
+          queryKey: trpc.qtask.list.queryKey({ parentId: oldParentId }),
         });
       },
     }),
   );
 }
 
-export function useSetQueueNameMutation() {
+export function setQtaskTitle() {
   const client = useQueryClient();
 
   return useMutation(
-    trpc.queue.setName.mutationOptions({
-      onSuccess() {
-        client.invalidateQueries({ queryKey: trpc.queue.list.queryKey() });
+    trpc.qtask.setName.mutationOptions({
+      onSuccess(_, { parentId }) {
+        client.invalidateQueries({ queryKey: trpc.qtask.list.queryKey({ parentId }) });
       },
     }),
   );
 }
 
-export function useSetTaskStatusMutation() {
+export function useSetStatusMutation() {
   const client = useQueryClient();
 
   return useMutation(
-    trpc.task.setStatus.mutationOptions({
-      onSuccess(_, { queueId }) {
-        client.invalidateQueries({ queryKey: trpc.task.list.queryKey({ queueId }) });
+    trpc.qtask.setStatus.mutationOptions({
+      onSuccess(_, { parentId }) {
+        client.invalidateQueries({ queryKey: trpc.qtask.list.queryKey({ parentId }) });
       },
     }),
   );

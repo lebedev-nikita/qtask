@@ -1,10 +1,8 @@
 import { router } from "./_config";
 import { authRouter } from "./auth";
-import { queueRouter } from "./queue";
-import { taskRouter } from "./task";
+import { qtaskRouter } from "./qtask";
 
 export const appRouter = router({
   auth: authRouter,
-  queue: queueRouter,
-  task: taskRouter,
+  qtask: qtaskRouter,
 });

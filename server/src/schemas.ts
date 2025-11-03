@@ -5,22 +5,7 @@ export const CamelizedSchema = z
   .record(z.string(), z.unknown())
   .transform((value) => camelcaseKeys(value));
 
-export const TaskStatusSchema = z.enum(["active", "finished"]);
-
-export const TaskSchema = z.object({
-  taskId: z.string(),
-  queueId: z.string(),
-  title: z.string(),
-  priority: z.number(),
-  createdAt: z.date(),
-  status: TaskStatusSchema,
-});
-
-export const QueueSchema = z.object({
-  queueId: z.string(),
-  name: z.string(),
-  createdAt: z.date(),
-});
+export const QtaskStatusSchema = z.enum(["active", "finished"]);
 
 export const UserSchema = z.object({
   userId: z.uuid(),
@@ -28,6 +13,16 @@ export const UserSchema = z.object({
   name: z.string(),
   picture: z.url().nullable(),
   createdAt: z.date(),
+});
+
+export const QtaskSchema = z.object({
+  qtaskId: z.string(),
+  title: z.string(),
+  description: z.string().nullable(),
+  createdAt: z.date(),
+  status: QtaskStatusSchema,
+  priority: z.number(),
+  parentId: z.string().nullable(),
 });
 
 export const GooglePayloadSchema = z.object({

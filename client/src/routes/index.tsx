@@ -1,47 +1,21 @@
 import { DndContext } from "@dnd-kit/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useCreateQueueMutation, useMoveTaskMutation, useQueues } from "@/hooks/api";
-import QueuePanel from "@/routes/-components/QueuePanel";
+import { useQtasks, useSetParentMutation } from "@/hooks/api";
+import QtaskCard from "@/routes/-components/QtaskCard";
 import type { DraggablePayload, DropzonePayload } from "@/types";
+import AddQtaskButton from "./-components/AddQtaskButton";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
-  const [queueName, setQueueName] = useState("");
+  const qtasks = useQtasks({ parentId: null });
 
-  const queues = useQueues();
-  const createQueueM = useCreateQueueMutation();
-
-  const moveTaskM = useMoveTaskMutation();
+  const setParent = useSetParentMutation();
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-6">
-      <div className="flex flex-col gap-2">
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            createQueueM.mutate({ name: queueName });
-            setQueueName("");
-          }}
-        >
-          <Input
-            className="min-w-[140px]"
-            placeholder="queue name"
-            value={queueName}
-            onChange={(e) => setQueueName(e.target.value)}
-          />
-          <Button type="submit">+ QUEUE</Button>
-        </form>
-
-        <form onSubmit={(e) => e.preventDefault()}></form>
-      </div>
-
+    <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4">
       <DndContext
         onDragEnd={(event) => {
           if (!event.over) return;
@@ -49,22 +23,22 @@ function Index() {
           const active = event.active.data.current as DraggablePayload;
           const over = event.over.data.current as DropzonePayload;
 
-          moveTaskM.mutate({
-            taskId: active.taskId,
-            toQueueId: over.queueId,
-            fromQueueId: active.queueId,
+          setParent.mutate({
+            qtaskId: active.qtaskId,
+            newParentId: over.parentId,
+            oldParentId: active.parentId,
             priority: over.priority,
           });
         }}
       >
-        <div className="flex rounded border border-black">
-          {queues.data?.map((queue) => (
-            <QueuePanel key={queue.queueId} queue={queue} />
+        <div className="flex gap-2 rounded">
+          {qtasks.data?.map((queue) => (
+            <QtaskCard key={queue.qtaskId} qtask={queue} />
           ))}
         </div>
       </DndContext>
+
+      <AddQtaskButton priority={0} parentId={null} />
     </div>
   );
 }
-
-export default Index;
