@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { TITLE_ADD_QTASK } from "@/config";
 import { useCreateQtaskMutation } from "@/hooks/api";
 
 type Props = {
@@ -20,10 +21,9 @@ type Props = {
   onOpenChange(open: boolean): void;
 };
 
-const FULL_TITLE = "Add Qtask";
-
 export default function AddQtaskDialog(props: Props) {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const createQtaskM = useCreateQtaskMutation();
 
@@ -31,8 +31,9 @@ export default function AddQtaskDialog(props: Props) {
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{FULL_TITLE}</DialogTitle>
+          <DialogTitle>{TITLE_ADD_QTASK}</DialogTitle>
         </DialogHeader>
+
         <form
           className={clsx("flex flex-col gap-1", props.className)}
           onSubmit={(e) => {
@@ -43,7 +44,7 @@ export default function AddQtaskDialog(props: Props) {
               parentId: props.parentId,
               title: title,
               priority: props.priority,
-              description: null,
+              description,
             });
             setTitle("");
           }}
@@ -52,6 +53,12 @@ export default function AddQtaskDialog(props: Props) {
             placeholder="qtask title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+          />
+
+          <Input
+            placeholder="qtask description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <DialogFooter>
             <DialogClose asChild>

@@ -1,20 +1,24 @@
 import { QtaskStatusSchema } from "@server/schemas";
 import { pg } from "@server/sensors/pg";
 import z from "zod";
-import { publicProcedure, router } from "./_config";
+import { authenticatedProcedure, publicProcedure, router } from "./_config";
 
 export const qtaskRouter = router({
-  create: publicProcedure
+  create: authenticatedProcedure
     .input(
       z.object({
         title: z.string(),
-        description: z.string().nullable(),
+        description: z
+          .string()
+          .trim()
+          .nullable()
+          .transform((str) => str || null),
         priority: z.number(),
         parentId: z.string().nullable(),
       }),
     )
-    .mutation(async ({ input }) => {
-      await pg.qtask.create(input);
+    .mutation(async ({ input, ctx }) => {
+      await pg.qtask.create({ ...input, createdBy: ctx.jwt.userId });
     }),
 
   list: publicProcedure
@@ -27,7 +31,7 @@ export const qtaskRouter = router({
       return await pg.qtask.list(input);
     }),
 
-  setParent: publicProcedure
+  setParent: authenticatedProcedure
     .input(
       z.object({
         qtaskId: z.string(),
@@ -44,7 +48,7 @@ export const qtaskRouter = router({
       });
     }),
 
-  setStatus: publicProcedure
+  setStatus: authenticatedProcedure
     .input(
       z.object({
         parentId: z.string().nullable(),
@@ -56,7 +60,7 @@ export const qtaskRouter = router({
       await pg.qtask.setStatus({ qtaskId: input.qtaskId, status: input.status });
     }),
 
-  delete: publicProcedure
+  delete: authenticatedProcedure
     .input(
       z.object({
         qtaskId: z.string(),
@@ -67,7 +71,7 @@ export const qtaskRouter = router({
       await pg.qtask.delete({ qtaskId });
     }),
 
-  setName: publicProcedure
+  setName: authenticatedProcedure
     .input(
       z.object({
         qtaskId: z.string(),

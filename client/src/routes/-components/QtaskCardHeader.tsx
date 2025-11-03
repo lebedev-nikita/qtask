@@ -29,15 +29,15 @@ type Props = {
 };
 
 export default function QtaskCardHeader(props: Props) {
-  const [draft, setDraft] = useState<null | string>(null);
+  const [title, setTitle] = useState<null | string>(null);
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const deleteQueueM = useDeleteQtaskMutation();
   const setQueueNameM = setQtaskTitle();
 
-  const editName = draft !== null;
-  const didNameChange = draft !== props.qtask.title;
+  const editName = title !== null;
+  const didNameChange = title !== props.qtask.title;
 
   return (
     <div className={clsx("flex items-center justify-between gap-1", props.className)}>
@@ -46,15 +46,15 @@ export default function QtaskCardHeader(props: Props) {
           className="flex grow gap-1"
           onSubmit={(e) => {
             e.preventDefault();
-            setDraft(null);
+            setTitle(null);
             setQueueNameM.mutate({
-              title: draft,
+              title,
               qtaskId: props.qtask.qtaskId,
               parentId: props.qtask.parentId,
             });
           }}
         >
-          <Input value={draft} onChange={(e) => setDraft(e.target.value)} />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
           {didNameChange && (
             <Button type="submit">
               <CheckIcon />
@@ -67,11 +67,11 @@ export default function QtaskCardHeader(props: Props) {
 
       <div className="flex gap-1">
         {!editName ? (
-          <Button onClick={() => setDraft(props.qtask.title)}>
+          <Button onClick={() => setTitle(props.qtask.title)}>
             <EditIcon />
           </Button>
         ) : (
-          <Button onClick={() => setDraft(null)}>
+          <Button onClick={() => setTitle(null)}>
             <XIcon />
           </Button>
         )}

@@ -25,12 +25,13 @@ class Store {
     description: string | null;
     parentId: string | null;
     priority: number;
+    createdBy: string;
   }) {
     const rows = await sql`
       INSERT INTO qtask
-        (title,           description,          parent_id,         priority        )
+        (title,           description,          parent_id,         priority,         created_by        )
       VALUES
-        (${props.title}, ${props.description}, ${props.parentId}, ${props.priority})
+        (${props.title}, ${props.description}, ${props.parentId}, ${props.priority}, ${props.createdBy})
       RETURNING *
     `;
 

@@ -15,6 +15,7 @@ CREATE TABLE qtask (
   created_at    TIMESTAMPTZ       NOT NULL DEFAULT now(),
   status        qtask_status      NOT NULL DEFAULT 'active',
   priority      DOUBLE PRECISION  NOT NULL,
-  parent_id     BIGINT                NULL REFERENCES qtask(qtask_id),
+  parent_id     BIGINT                NULL REFERENCES qtask (qtask_id),
+  created_by    UUID              NOT NULL REFERENCES "user" (user_id),
   UNIQUE NULLS DISTINCT (parent_id, priority)
 );

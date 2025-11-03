@@ -12,6 +12,7 @@ export const UserSchema = z.object({
   email: z.email(),
   name: z.string(),
   picture: z.url().nullable(),
+
   createdAt: z.date(),
 });
 
@@ -19,10 +20,12 @@ export const QtaskSchema = z.object({
   qtaskId: z.string(),
   title: z.string(),
   description: z.string().nullable(),
-  createdAt: z.date(),
   status: QtaskStatusSchema,
   priority: z.number(),
   parentId: z.string().nullable(),
+
+  createdAt: z.date(),
+  createdBy: z.uuid(),
 });
 
 export const GooglePayloadSchema = z.object({

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { TITLE_ADD_QTASK } from "@/config";
 import AddQtaskDialog from "./AddQtaskDialog";
 
 type Props = {
@@ -7,8 +8,6 @@ type Props = {
   parentId: string | null;
   priority?: number;
 };
-
-const FULL_TITLE = "Add Qtask";
 
 export default function AddQtaskButton(props: Props) {
   const [open, setOpen] = useState(false);
@@ -20,7 +19,7 @@ export default function AddQtaskButton(props: Props) {
         variant="outline"
         onClick={() => setOpen(true)}
       >
-        {FULL_TITLE}
+        {TITLE_ADD_QTASK}
       </Button>
 
       {props.priority !== undefined && (
