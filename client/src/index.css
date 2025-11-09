@@ -118,3 +118,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 5px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+}
+
+.react-resizable-handle-e {
+  top: 0;
+  right: 0;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.react-resizable-handle-w {
+  top: 0;
+  left: 0;
+  height: 100%;
+  cursor: ew-resize;
+}

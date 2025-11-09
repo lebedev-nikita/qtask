@@ -1,7 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import clsx from "clsx";
 import { ChevronDownIcon, ChevronUpIcon, GripVerticalIcon } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,6 +13,7 @@ import QtaskCardHeader from "./QtaskCardHeader";
 type Props = {
   className?: string;
   qtask: Qtask;
+  onRemoveFromBoard?(): void;
 };
 
 export default function QtaskCard(props: Props) {
@@ -20,7 +21,7 @@ export default function QtaskCard(props: Props) {
   const [open, setOpen] = useState(false);
 
   const draggable = useDraggable({
-    id: props.qtask.qtaskId,
+    id: useId(),
     data: {
       qtaskId: props.qtask.qtaskId,
       parentId: props.qtask.parentId,
@@ -39,7 +40,7 @@ export default function QtaskCard(props: Props) {
           : undefined,
       }}
       className={clsx(
-        "flex min-w-[350px] flex-col gap-2 rounded-sm border border-slate-300 p-2",
+        "flex min-w-[350px] flex-col gap-2 rounded-sm border border-slate-300 bg-white p-2",
         props.className,
       )}
     >
@@ -76,10 +77,10 @@ export default function QtaskCard(props: Props) {
           onClose={() => setOpen(false)}
           newChildPriority={newChildPriority}
           className="grow"
+          onRemoveFromBoard={props.onRemoveFromBoard}
           qtask={props.qtask}
         />
       </div>
-
       {open && tasks.data && newChildPriority !== undefined && (
         <>
           <div className="flex grow flex-col gap-[1px]">
@@ -92,7 +93,7 @@ export default function QtaskCard(props: Props) {
 
               return (
                 <Fragment key={task.qtaskId}>
-                  <QtaskCard qtask={task} />
+                  <QtaskCard qtask={task} onRemoveFromBoard={props.onRemoveFromBoard} />
                   <Dropzone priority={dropzonePriority} parentId={props.qtask.qtaskId} />
                 </Fragment>
               );

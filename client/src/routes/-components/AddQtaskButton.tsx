@@ -22,10 +22,9 @@ export default function AddQtaskButton(props: Props) {
         {TITLE_ADD_QTASK}
       </Button>
 
-      {props.priority !== undefined && (
+      {props.priority !== undefined && open && (
         <AddQtaskDialog
-          open={open}
-          onOpenChange={setOpen}
+          onClose={() => setOpen(false)}
           parentId={props.parentId}
           priority={props.priority}
         />

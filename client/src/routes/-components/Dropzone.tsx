@@ -12,6 +12,7 @@ export default function Dropzone(props: Props) {
   const droppable = useDroppable({
     id: `${props.parentId}:${props.priority}`,
     data: {
+      type: "qtask",
       parentId: props.parentId,
       priority: props.priority,
     } satisfies DropzonePayload,

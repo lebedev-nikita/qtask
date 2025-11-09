@@ -17,13 +17,20 @@ export const UserSchema = z.object({
 });
 
 export const QtaskSchema = z.object({
-  qtaskId: z.string(),
+  qtaskId: z.uuid(),
   title: z.string(),
   description: z.string().nullable(),
   status: QtaskStatusSchema,
   priority: z.number(),
-  parentId: z.string().nullable(),
+  parentId: z.uuid().nullable(),
 
+  createdAt: z.date(),
+  createdBy: z.uuid(),
+});
+
+export const BoardSchema = z.object({
+  boardId: z.uuid(),
+  title: z.string(),
   createdAt: z.date(),
   createdBy: z.uuid(),
 });

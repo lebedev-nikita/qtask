@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -17,8 +16,7 @@ type Props = {
   className?: string;
   parentId: string | null;
   priority: number;
-  open: boolean;
-  onOpenChange(open: boolean): void;
+  onClose(): void;
 };
 
 export default function AddQtaskDialog(props: Props) {
@@ -28,7 +26,7 @@ export default function AddQtaskDialog(props: Props) {
   const createQtaskM = useCreateQtaskMutation();
 
   return (
-    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+    <Dialog open onOpenChange={props.onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{TITLE_ADD_QTASK}</DialogTitle>
@@ -38,7 +36,8 @@ export default function AddQtaskDialog(props: Props) {
           className={clsx("flex flex-col gap-1", props.className)}
           onSubmit={(e) => {
             e.preventDefault();
-            if (props.priority === undefined) return;
+            setTitle("");
+            props.onClose();
 
             createQtaskM.mutate({
               parentId: props.parentId,
@@ -46,7 +45,6 @@ export default function AddQtaskDialog(props: Props) {
               priority: props.priority,
               description,
             });
-            setTitle("");
           }}
         >
           <Input
@@ -61,9 +59,7 @@ export default function AddQtaskDialog(props: Props) {
             onChange={(e) => setDescription(e.target.value)}
           />
           <DialogFooter>
-            <DialogClose asChild>
-              <Button type="submit">Submit</Button>
-            </DialogClose>
+            <Button type="submit">Submit</Button>
           </DialogFooter>
         </form>
       </DialogContent>

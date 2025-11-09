@@ -5,7 +5,13 @@ export type DraggablePayload = {
   qtaskId: string;
 };
 
-export type DropzonePayload = {
-  parentId: string;
-  priority: number;
-};
+export type DropzonePayload =
+  | {
+      type: "qtask";
+      parentId: string;
+      priority: number;
+    }
+  | {
+      type: "board";
+      boardId: string;
+    };

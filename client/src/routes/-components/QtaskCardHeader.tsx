@@ -4,6 +4,7 @@ import {
   CheckIcon,
   EditIcon,
   EllipsisVerticalIcon,
+  MinusIcon,
   PlusIcon,
   TrashIcon,
   XIcon,
@@ -26,6 +27,7 @@ type Props = {
   newChildPriority: number | undefined;
   onOpen(): void;
   onClose(): void;
+  onRemoveFromBoard?(): void;
 };
 
 export default function QtaskCardHeader(props: Props) {
@@ -33,8 +35,8 @@ export default function QtaskCardHeader(props: Props) {
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
 
-  const deleteQueueM = useDeleteQtaskMutation();
-  const setQueueNameM = setQtaskTitle();
+  const deleteQtaskM = useDeleteQtaskMutation();
+  const setQtaskNameM = setQtaskTitle();
 
   const editName = title !== null;
   const didNameChange = title !== props.qtask.title;
@@ -47,7 +49,7 @@ export default function QtaskCardHeader(props: Props) {
           onSubmit={(e) => {
             e.preventDefault();
             setTitle(null);
-            setQueueNameM.mutate({
+            setQtaskNameM.mutate({
               title,
               qtaskId: props.qtask.qtaskId,
               parentId: props.qtask.parentId,
@@ -96,7 +98,7 @@ export default function QtaskCardHeader(props: Props) {
 
             <DropdownMenuItem
               onClick={() => {
-                deleteQueueM.mutate({
+                deleteQtaskM.mutate({
                   qtaskId: props.qtask.qtaskId,
                   parentId: props.qtask.parentId,
                 });
@@ -105,13 +107,18 @@ export default function QtaskCardHeader(props: Props) {
               <span className="grow">Delete</span>
               <TrashIcon />
             </DropdownMenuItem>
+
+            {props.onRemoveFromBoard && (
+              <DropdownMenuItem onClick={props.onRemoveFromBoard}>
+                Remove From Board <MinusIcon />
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {props.newChildPriority !== undefined && (
+        {props.newChildPriority !== undefined && openAddDialog && (
           <AddQtaskDialog
-            open={openAddDialog}
-            onOpenChange={setOpenAddDialog}
+            onClose={() => setOpenAddDialog(false)}
             parentId={props.qtask.qtaskId}
             priority={props.newChildPriority}
           />

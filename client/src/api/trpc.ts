@@ -7,7 +7,10 @@ import type { AppRouter } from "@/types";
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({ onError: showError }),
-  defaultOptions: { mutations: { onError: showError } },
+  defaultOptions: {
+    queries: { retry: false },
+    mutations: { retry: false, onError: showError },
+  },
 });
 
 export const client = createTRPCProxyClient<AppRouter>({
